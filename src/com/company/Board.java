@@ -8,6 +8,26 @@ public class Board {
     private boolean playerTurn;
     private int AI_SCORE = 0;
     private int PLAYER_SCORE = 0;
+    private Board parent;
+    private int depth;
+
+    public Board getParent() {
+        return parent;
+    }
+
+    public void setParent(Board parent) {
+        this.parent = parent;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+
 
     public int getAiScore() {
         return this.AI_SCORE;
@@ -54,7 +74,7 @@ public class Board {
         int beginningIndex = 6 * columnIndex;
         int endingIndex = beginningIndex + 6;
         String columnState = this.state.substring(beginningIndex, endingIndex);
-        return columnState.contains("U");
+        return !columnState.contains("U");
     }
 
     public String insert(int columnIndex, char turn) {

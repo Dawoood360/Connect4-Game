@@ -1,3 +1,5 @@
+package com.company;
+
 import com.company.Board;
 import com.company.Heuristics;
 import javafx.util.Pair;
@@ -9,7 +11,7 @@ public class MinMaxAlphaBeta {
         this.heuristics = new Heuristics();
     }
 
-    public Pair<Board, Double> Maximize(Board boardState,int alpha,int beta, int Maxdepth){
+    public Pair<Board, Double> Maximize(Board boardState,double alpha,double beta, int Maxdepth){
         if(boardState.getDepth()==Maxdepth)
         {   Pair<Board, Double> node = new Pair<Board, Double>(boardState, (double) this.heuristics.eval(boardState));
             return node;
@@ -36,7 +38,14 @@ public class MinMaxAlphaBeta {
                 maxUtility=utility;
             }
 
-
+            if (maxUtility>=beta)
+            {
+                break;
+            }
+            if (maxUtility>alpha)
+            {
+                alpha=maxUtility;
+            }
         }
         //System.out.println();
         //System.out.println(boardState.getState());
@@ -44,7 +53,7 @@ public class MinMaxAlphaBeta {
         return maxPair;
 
     }
-    public Pair<Board, Double> Minimize(Board boardState, int alpha,int beta,int Maxdepth){
+    public Pair<Board, Double> Minimize(Board boardState, double alpha,double beta,int Maxdepth){
 
         if(boardState.getDepth()==Maxdepth)
         {   Pair<Board, Double> node = new Pair<Board, Double>(boardState,(double)this.heuristics.eval(boardState));
@@ -69,7 +78,14 @@ public class MinMaxAlphaBeta {
                 minChild=currentChild;
                 minUtility=utility;
             }
-
+            if (minUtility<=alpha)
+            {
+                break;
+            }
+            if (minUtility<beta)
+            {
+                beta=minUtility;
+            }
 
         }
         //System.out.println(boardState.getState());
@@ -80,7 +96,7 @@ public class MinMaxAlphaBeta {
     }
     public Pair<Board,Integer> Decide(Board board,int maxDepth){
 
-        Pair<Board, Double> decidedPair=Maximize(board,Double.POSITIVE_INFINITY,maxDepth);
+        Pair<Board, Double> decidedPair=Maximize(board,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,maxDepth);
         String state=decidedPair.getKey().getState();
         String parentState=decidedPair.getKey().getParent().getState();
         int i;

@@ -23,14 +23,14 @@ public class Heuristics {
 
 
         int colScore = evaluateScore(columns, redColScore, blueColScore);
-        System.out.println(colScore);
+
         int rowScore = evaluateScore(rows, redRowScore, blueRowScore);
-        System.out.println(rowScore);
+
         int rightDiagScore = evaluateScore(rightDiagonal, redRightDiagScore, blueRightDiagScore);
-        System.out.println(rightDiagScore);
+
         int leftDiagScore = evaluateScore(leftDiagonal, redLeftDiagScore, blueLeftDiagScore);
-        System.out.println(leftDiagScore);
-        System.out.println();
+
+
         return colScore + rowScore + rightDiagScore + leftDiagScore;
     }
 
@@ -46,22 +46,60 @@ public class Heuristics {
                 if (diag.charAt(i) == 'r') {
                     redCounter++;
                     blueCounter = 0;
-                } else if (diag.charAt(i) == 'b') {
+                } else if (diag.charAt(i) == 'y') {
                     blueCounter++;
                     redCounter = 0;
                 } else {
                     redCounter = 0;
                     blueCounter = 0;
                 }
-                if (blueCounter > 1)
-                    blueScore += blueCounter * 1000;
-                if (redCounter > 1)
-                    redScore += redCounter * 1000;
+                if(blueCounter==7)
+                {
+                    blueScore+=blueCounter * 120000;
+                }
+                else if(blueCounter==6)
+                {
+                    blueScore+=blueCounter * 100000;
+                }
+                else if(blueCounter==5)
+                {
+                    blueScore+=blueCounter * 90000;
+                }
+                else if(blueCounter==4)
+                {
+                    blueScore+=blueCounter * 80000;
+                }
+                else if(blueCounter==3)
+                {
+                    blueScore+=blueCounter * 20000;
+                }
+                else if (blueCounter == 2)
+                    blueScore += blueCounter * 500;
+
+                if(redCounter==7){
+                    redScore+=redCounter * 60000;
+                }
+                else if(redCounter==6){
+                    redScore+=redCounter * 40000;
+                }
+                else if(redCounter==5){
+                    redScore+=redCounter * 35000;
+                }
+                else if(redCounter==4)
+                {
+                    redScore+=redCounter * 30000;
+                }
+                else if(redCounter==3)
+                {
+                    redScore+=redCounter * 1000;
+                }
+                else if (redCounter == 2)
+                    redScore += redCounter * 100;
 
             }
         }
 
-        return redScore - blueScore;
+        return (int)(redScore - 1.5*blueScore);
     }
 
 

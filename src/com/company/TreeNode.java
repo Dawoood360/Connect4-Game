@@ -1,10 +1,10 @@
 package com.company;
 
-import java.util.ArrayList;
+import com.Tree.JGraphAdapterDemo;import java.util.ArrayList;
 
 public class TreeNode {
     private double heurstic;
-    private ArrayList<TreeNode> treeNodes=new ArrayList<TreeNode>();
+    private ArrayList<JGraphAdapterDemo.TreeNode> treeNodes=new ArrayList<JGraphAdapterDemo.TreeNode>();
 
 
     public double getHeurstic() {
@@ -15,11 +15,11 @@ public class TreeNode {
         this.heurstic = heurstic;
     }
 
-    public ArrayList<TreeNode> getTreeNodes() {
+    public ArrayList<JGraphAdapterDemo.TreeNode> getTreeNodes() {
         return treeNodes;
     }
 
-    public void setTreeNodes(ArrayList<TreeNode> treeNodes) {
+    public void setTreeNodes(ArrayList<JGraphAdapterDemo.TreeNode> treeNodes) {
         this.treeNodes = treeNodes;
     }
 }

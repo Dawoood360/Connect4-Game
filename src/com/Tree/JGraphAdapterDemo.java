@@ -2,9 +2,7 @@ package com.Tree;
 
 
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Rectangle;
+import java.awt.*;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -23,6 +21,9 @@ import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.ListenableDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.ListenableUndirectedGraph;
+
+import static java.lang.Math.abs;
 
 /**
  * A demo applet that shows how to use JGraph to visualize JGraphT graphs.
@@ -42,13 +43,14 @@ public class JGraphAdapterDemo<nodeID> extends JApplet {
      * @see java.applet.Applet#init().
      */
     // create a JGraphT graph
-    ListenableGraph g = new ListenableDirectedGraph( DefaultEdge.class );
+    ListenableGraph g = new ListenableUndirectedGraph(DefaultEdge.class );
 
     // create a visualization using JGraph, via an adapter
     private JGraphModelAdapter m_jgAdapter=new JGraphModelAdapter( g );
 
     JGraph jgraph = new JGraph( m_jgAdapter );
     private static Integer nodeID=0;
+    public int numberOfNodes=0;
     public void draw(TreeNode treeNode, String nodesId, boolean turn, int xPos, int yPos) {
 
 
@@ -76,6 +78,7 @@ public class JGraphAdapterDemo<nodeID> extends JApplet {
             Double parentHeurstic=treeNode.getHeurstic();
             parent=parentHeurstic.toString()+"-"+nodeID.toString();
             g.addVertex(parent);
+            numberOfNodes++;
             this.positionVertexAt(turn,parent,(int)xPos,(int)yPos);
             turn=!turn;
         }
@@ -89,22 +92,27 @@ public class JGraphAdapterDemo<nodeID> extends JApplet {
         double x=xPos;
         double y=yPos+120;
         y=y+60;
+
         ArrayList <String> nodeIds= new ArrayList<String>() ;
         for(TreeNode node:treeNode.getTreeNodes()) {
             Double childHeurstic=node.getHeurstic();
             String child=childHeurstic.toString()+"-"+nodeID.toString();
             nodeIds.add(child);
             g.addVertex( child);
+            numberOfNodes++;
             g.addEdge(parent,child);
-            x=x+120;
+
+            x=x+80;
 
             this.positionVertexAt(turn,child,(int)x,(int)y);
             nodeID++;
         }
         turn=!turn;
         int i =0;
+        yPos+=250;
+        xPos+=400;
         for(TreeNode node:treeNode.getTreeNodes()) {
-            draw(node,nodeIds.get(i),turn,xPos*(i-1),yPos+120);
+            draw(node,nodeIds.get(i),turn,(int)((xPos+300)*i),yPos+100*(i%4+1));
         i++;
         }
 
@@ -147,12 +155,30 @@ public class JGraphAdapterDemo<nodeID> extends JApplet {
         m_jgAdapter.edit(cellAttr,null,null,null);
     }
     public void showPane()
-    {   adjustDisplaySettings( jgraph );
-        getContentPane(  ).add( jgraph );
-        resize( 20000,20000 );
+    {
+        //resize( 20000,20000 );
+
+
+//        adjustDisplaySettings( jgraph );
+//        getContentPane(  ).add( jgraph );
+//        JFrame frame = new JFrame();
+//        JScrollPane pane=new JScrollPane(jgraph);
+//        pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//        pane.getHorizontalScrollBar().setEnabled(true);
+//        frame.getContentPane().add(pane);
+//        frame.pack();
+//        frame.setSize(new Dimension(10000,10000));
+//        frame.setVisible(true);
+
+        JGraph jgraph = new JGraph( m_jgAdapter );
         JFrame frame = new JFrame();
-        frame.getContentPane().add(new JScrollPane(jgraph));
+        JScrollPane pane=new JScrollPane(jgraph);
+        pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        frame.getContentPane().add(pane);
+        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        frame.setSize(new Dimension(2500,5000));
         frame.setVisible(true);
+
     }
 }

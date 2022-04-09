@@ -6,7 +6,7 @@ import javafx.util.Pair;
 
 public class MinMaxAlphaBeta {
     private Heuristics heuristics;
-
+    public int numberOfnodes;
     public MinMaxAlphaBeta() {
         this.heuristics = new Heuristics();
     }
@@ -14,6 +14,7 @@ public class MinMaxAlphaBeta {
     public Pair<Board, Double> Maximize(Board boardState,TreeNode parent,double alpha,double beta, int Maxdepth){
         if(boardState.getDepth()==Maxdepth)
         {   Pair<Board, Double> node = new Pair<Board, Double>(boardState, (double) this.heuristics.eval(boardState));
+            numberOfnodes++;
             return node;
         }
         Board maxChild=null;
@@ -53,6 +54,7 @@ public class MinMaxAlphaBeta {
         }
         //System.out.println();
         //System.out.println(boardState.getState());
+        numberOfnodes++;
         Pair<Board, Double> maxPair=new Pair<Board, Double>(maxChild,maxUtility);
         return maxPair;
 
@@ -61,6 +63,7 @@ public class MinMaxAlphaBeta {
 
         if(boardState.getDepth()==Maxdepth)
         {   Pair<Board, Double> node = new Pair<Board, Double>(boardState,(double)this.heuristics.eval(boardState));
+            numberOfnodes++;
             return node;
         }
         Board minChild=null;
@@ -78,6 +81,7 @@ public class MinMaxAlphaBeta {
             currentChild.setDepth(currentChild.getParent().getDepth()+1);
             Pair<Board, Double> currentPair= Maximize(currentChild,childTreeNode,alpha,beta,Maxdepth);
             utility=currentPair.getValue();
+            childTreeNode.setHeurstic((int)utility);
             parent.getTreeNodes().add(childTreeNode);
             if(utility<minUtility)
             {
@@ -96,6 +100,7 @@ public class MinMaxAlphaBeta {
 
         }
         //System.out.println(boardState.getState());
+        numberOfnodes++;
         Pair<Board, Double> minPair=new Pair<Board, Double>(minChild,minUtility);
         return minPair;
 

@@ -4,7 +4,7 @@ import javafx.util.Pair;
 
 public class MinMax {
     private Heuristics heuristics;
-
+    public int numberOfnodes;
     public MinMax() {
         this.heuristics = new Heuristics();
     }
@@ -12,6 +12,7 @@ public class MinMax {
     public Pair<Board, Double> Maximize(Board boardState, TreeNode parent,int Maxdepth){
         if(boardState.getDepth()==Maxdepth)
         {   Pair<Board, Double> node = new Pair<Board, Double>(boardState, (double) this.heuristics.eval(boardState));
+            numberOfnodes++;
             return node;
         }
         Board maxChild=null;
@@ -32,6 +33,7 @@ public class MinMax {
             utility=currentPair.getValue();
             childTreeNode.setHeurstic((int)utility);
             parent.getTreeNodes().add(childTreeNode);
+
             if(utility>maxUtility)
             {
                 maxChild=currentChild;
@@ -44,6 +46,7 @@ public class MinMax {
         }
         //System.out.println();
         //System.out.println(boardState.getState());
+        numberOfnodes++;
         Pair<Board, Double> maxPair=new Pair<Board, Double>(maxChild,maxUtility);
         return maxPair;
 
@@ -52,7 +55,9 @@ public class MinMax {
 
         if(boardState.getDepth()==Maxdepth)
         {   Pair<Board, Double> node = new Pair<Board, Double>(boardState,(double)this.heuristics.eval(boardState));
+            numberOfnodes++;
             return node;
+
         }
         Board minChild=null;
         double minUtility=Double.POSITIVE_INFINITY;
@@ -69,7 +74,9 @@ public class MinMax {
             currentChild.setDepth(currentChild.getParent().getDepth()+1);
             Pair<Board, Double> currentPair= Maximize(currentChild,childTreeNode,Maxdepth);
             utility=currentPair.getValue();
+            childTreeNode.setHeurstic((int)utility);
             parent.getTreeNodes().add(childTreeNode);
+
             if(utility<minUtility)
             {
                 minChild=currentChild;
@@ -80,6 +87,7 @@ public class MinMax {
 
         }
         //System.out.println(boardState.getState());
+        numberOfnodes++;
         Pair<Board, Double> minPair=new Pair<Board, Double>(minChild,minUtility);
         return minPair;
 

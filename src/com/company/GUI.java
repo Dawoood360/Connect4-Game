@@ -62,6 +62,7 @@ public class GUI extends Application {
     private Button restart;
     private TreeNode rootTree=new TreeNode();
     private String algorithm;
+    JGraphAdapterDemo jGraphModelAdapter=new JGraphAdapterDemo();
     private MinMax minMax= new MinMax();
         private MinMaxAlphaBeta minMaxAlphaBeta= new MinMaxAlphaBeta();
     private Board board;
@@ -129,8 +130,8 @@ public class GUI extends Application {
             public void handle(ActionEvent e)
            {
 
-               JGraphAdapterDemo jGraphModelAdapter=new JGraphAdapterDemo();
-               jGraphModelAdapter.draw(rootTree,null,true,150,10);
+
+               jGraphModelAdapter.draw(rootTree,null,true,500,10);
                 jGraphModelAdapter.showPane();
             }
         };
@@ -176,7 +177,7 @@ public class GUI extends Application {
             public void handle(ActionEvent e)
             {
                 algorithm = (String) type.getValue();
-                System.out.println("Algorithm type is "+ algorithm);
+
             }
         };
         
@@ -324,20 +325,28 @@ public class GUI extends Application {
                 rootTree=new TreeNode();
                 final int column2;
                 this.board.setState(this.getState());
-                System.out.println(this.board.getState().length());
                 Pair<Board,Integer> resultedMove;
-                System.out.println(this.algorithmCombo.getValue());
+                long startTime,endTime;
+                System.out.println("Current depth: "+depthInput.getText());
                 if(this.algorithmCombo.getValue().equals("No Pruning"))
-                {
+                {   startTime = System.nanoTime();
                     resultedMove =minMax.Decide(this.board,rootTree,Integer.parseInt(depthInput.getText()));
+                    endTime = System.nanoTime();
+                    System.out.println("Nodes exapnded: "+minMax.numberOfnodes);
+                    minMax.numberOfnodes=0;
                 }
                 else
                 {
+                    startTime = System.nanoTime();
                     resultedMove =minMaxAlphaBeta.Decide(this.board,rootTree,Integer.parseInt(depthInput.getText()));
+                    endTime = System.nanoTime();
+                    System.out.println("Nodes exapnded: "+minMaxAlphaBeta.numberOfnodes);
+                    minMaxAlphaBeta.numberOfnodes=0;
                 }
+                System.out.println("Elapsed Time for "+algorithmCombo.getValue().toString()+": "+(float)(endTime-startTime)/1000000000.0+" s");
+
                 column2=resultedMove.getValue();
                 placeDisc(new Disc(redMove),column2);
-                System.out.println(column2);
                 redMove=!redMove;
     }
     private void placeDisc(Disc disc , int column){
@@ -376,6 +385,8 @@ public class GUI extends Application {
     private void scoreCheck(int column, int row){
         List<Point2D> vertical = IntStream.rangeClosed(row-3,row+3).mapToObj(r -> new Point2D(column,r)).collect(Collectors.toList());
         List<Point2D> horizontal = IntStream.rangeClosed(column-3,column+3).mapToObj(c -> new Point2D(c,row)).collect(Collectors.toList());
+        List<Point2D> vertical2 = IntStream.rangeClosed(row-4,row+4).mapToObj(r -> new Point2D(column,r)).collect(Collectors.toList());
+        List<Point2D> horizontal2 = IntStream.rangeClosed(column-4,column+4).mapToObj(c -> new Point2D(c,row)).collect(Collectors.toList());
 
         Point2D topLeft = new Point2D(column - 3 , row -3);
         List<Point2D> diagonal1 = IntStream.rangeClosed(0,6).mapToObj(i -> topLeft.add(i,i)).collect(Collectors.toList());
@@ -388,18 +399,32 @@ public class GUI extends Application {
 
         Point2D botLeft2 = new Point2D(column - 4 , row +4);
         List<Point2D> diagonal4 = IntStream.rangeClosed(0,6).mapToObj(i -> botLeft2.add(i,-i)).collect(Collectors.toList());
-        
         if (checkRange(vertical))
         {
             increaseScore();
             //System.out.println("Vertical detected");
         }
+        else if (checkRange(vertical2))
+        {
+            increaseScore();
+            increaseScore();
+            //System.out.println("Vertical detected");
+        }
+
+
         if (checkRange(horizontal))
         {
             increaseScore();
             //System.out.println("Horizontal detected");
         }
-        if (checkRange(diagonal4))
+        else if (checkRange(horizontal2))
+        {
+            increaseScore();
+            increaseScore();
+            //System.out.println("Horizontal detected");
+        }
+
+        else if (checkRange(diagonal1))
         {
             increaseScore();
             //System.out.println("Top left detected");
@@ -407,17 +432,19 @@ public class GUI extends Application {
         else if (checkRange(diagonal3))
         {
             increaseScore();
+            increaseScore();
             //System.out.println("Bottom left detected");
         }
-        else if (checkRange(diagonal1))
+         if (checkRange(diagonal2))
         {
+            increaseScore();
+            //System.out.println("Bottom left detected");
+        }
+        else if (checkRange(diagonal4))
+        {
+            increaseScore();
             increaseScore();
             //System.out.println("Top left detected");
-        }
-        else if (checkRange(diagonal2))
-        {
-            increaseScore();
-            //System.out.println("Bottom left detected");
         }
 
 

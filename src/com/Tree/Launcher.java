@@ -7,7 +7,7 @@ import javafx.application.Application;
  * @author abdul
  */
 public class Launcher{
-    public static void main(String[] args) {
+    public  void launchgraph() {
         Application.launch(
                 BasicGraphDemo.class);
     }

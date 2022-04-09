@@ -11,7 +11,7 @@ public class MinMaxAlphaBeta {
         this.heuristics = new Heuristics();
     }
 
-    public Pair<Board, Double> Maximize(Board boardState,double alpha,double beta, int Maxdepth){
+    public Pair<Board, Double> Maximize(Board boardState,TreeNode parent,double alpha,double beta, int Maxdepth){
         if(boardState.getDepth()==Maxdepth)
         {   Pair<Board, Double> node = new Pair<Board, Double>(boardState, (double) this.heuristics.eval(boardState));
             return node;
@@ -28,14 +28,18 @@ public class MinMaxAlphaBeta {
             //System.out.print(i);
             Board currentChild = new Board(boardState.insert(i,'r'),false);
             currentChild.setParent(boardState);
+            TreeNode childTreeNode=new TreeNode();
             currentChild.setDepth(currentChild.getParent().getDepth()+1);
-            Pair<Board, Double> currentPair= Minimize(currentChild,alpha,beta,Maxdepth);
+            Pair<Board, Double> currentPair= Minimize(currentChild,childTreeNode,alpha,beta,Maxdepth);
             utility=currentPair.getValue();
-
+            childTreeNode.setHeurstic((int)utility);
+            parent.getTreeNodes().add(childTreeNode);
             if(utility>maxUtility)
             {
                 maxChild=currentChild;
                 maxUtility=utility;
+                parent.setHeurstic((int)utility);
+
             }
 
             if (maxUtility>=beta)
@@ -53,7 +57,7 @@ public class MinMaxAlphaBeta {
         return maxPair;
 
     }
-    public Pair<Board, Double> Minimize(Board boardState, double alpha,double beta,int Maxdepth){
+    public Pair<Board, Double> Minimize(Board boardState, TreeNode parent,double alpha,double beta,int Maxdepth){
 
         if(boardState.getDepth()==Maxdepth)
         {   Pair<Board, Double> node = new Pair<Board, Double>(boardState,(double)this.heuristics.eval(boardState));
@@ -70,13 +74,16 @@ public class MinMaxAlphaBeta {
             //System.out.print(i);
             Board currentChild = new Board(boardState.insert(i,'y'),true);
             currentChild.setParent(boardState);
+            TreeNode childTreeNode=new TreeNode();
             currentChild.setDepth(currentChild.getParent().getDepth()+1);
-            Pair<Board, Double> currentPair= Maximize(currentChild,alpha,beta,Maxdepth);
+            Pair<Board, Double> currentPair= Maximize(currentChild,childTreeNode,alpha,beta,Maxdepth);
             utility=currentPair.getValue();
+            parent.getTreeNodes().add(childTreeNode);
             if(utility<minUtility)
             {
                 minChild=currentChild;
                 minUtility=utility;
+                parent.setHeurstic((int) utility);
             }
             if (minUtility<=alpha)
             {
@@ -94,9 +101,9 @@ public class MinMaxAlphaBeta {
 
 
     }
-    public Pair<Board,Integer> Decide(Board board,int maxDepth){
+    public Pair<Board,Integer> Decide(Board board,TreeNode parent ,int maxDepth){
 
-        Pair<Board, Double> decidedPair=Maximize(board,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,maxDepth);
+        Pair<Board, Double> decidedPair=Maximize(board,parent,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,maxDepth);
         String state=decidedPair.getKey().getState();
         String parentState=decidedPair.getKey().getParent().getState();
         int i;

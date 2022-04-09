@@ -1,0 +1,82 @@
+package com.Tree;
+
+import com.company.TreeNode;
+import org.jgraph.JGraph;
+import org.jgraph.graph.AttributeMap;
+import org.jgraph.graph.DefaultGraphCell;
+import org.jgraph.graph.GraphConstants;
+import org.jgrapht.Graph;
+import org.jgrapht.ListenableGraph;
+import org.jgrapht.ext.JGraphModelAdapter;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.ListenableDirectedGraph;
+import org.jgrapht.graph.SimpleGraph;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
+import java.util.HashMap;
+import java.util.Map;
+
+
+public class Treetest {
+    Graph<String, DefaultEdge> g
+            = new SimpleGraph<>(DefaultEdge.class);
+
+    public void draw(TreeNode treeNode, boolean turn)
+    {
+        // create a visualization using JGraph, via the adapter
+        JGraphModelAdapter adapterDemo=new JGraphModelAdapter( g );
+        boolean color = turn;
+        Double parentHeurstic=treeNode.getHeurstic();
+        AttributeMap attributeMap=new AttributeMap();
+        this.g.addVertex("v1");
+        DefaultGraphCell cell=adapterDemo.getVertexCell("v1");
+        attributeMap=cell.getAttributes();
+        Rectangle2D rect=GraphConstants.getBounds(attributeMap);
+        double x=rect.getX();
+        double y=rect.getY();
+        for(TreeNode node:treeNode.getTreeNodes()) {
+            Double childHeurstic=node.getHeurstic();
+            g.addVertex( childHeurstic.toString());
+            g.addEdge(parentHeurstic.toString(),childHeurstic.toString());
+            x=x+80;
+            y=y+100;
+            this.positionVertexAt(adapterDemo,turn,childHeurstic,(int)x,(int)y);
+        }
+        turn=!turn;
+        for(TreeNode node:treeNode.getTreeNodes()) {
+            draw(node,turn);
+        }
+
+    }
+    private void positionVertexAt( JGraphModelAdapter adapterDemo,boolean color,Object vertex, int x, int y ) {
+        DefaultGraphCell cell = adapterDemo.getVertexCell( vertex );
+        Map attr = cell.getAttributes(  );
+        AttributeMap attributeMap= new AttributeMap();
+        Color colorAi= Color.RED;
+        Color colorPerson = Color.YELLOW;
+        if(color)
+        GraphConstants.setBackground(attr,colorAi);
+        else
+            GraphConstants.setBackground(attr,colorPerson);
+        Rectangle2D b    = GraphConstants.getBounds( attr );
+        Rectangle rect=new Rectangle( x, y, (int)b.getWidth(), (int)b.getHeight() );
+
+        GraphConstants.setBounds( attr, rect );
+        Map cellAttr = new HashMap(  );
+        cellAttr.put( cell, attr );
+        adapterDemo.edit(cellAttr,null,null,null);
+    }
+//    public void showPane()
+//
+//    {
+//        JGraph jgraph = new JGraph( adapterDemo );
+//        JFrame frame = new JFrame();
+//        frame.getContentPane().add(new JScrollPane(jgraph));
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.pack();
+//        frame.setVisible(true);
+//    }
+
+}

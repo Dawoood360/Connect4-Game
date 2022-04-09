@@ -10,6 +10,10 @@ package com.company;
  * @author abdul
  */
 
+import com.Tree.BasicGraphDemo;
+import com.Tree.JGraphAdapterDemo;
+import com.Tree.Launcher;
+import com.Tree.Treetest;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.geometry.Point2D;
@@ -42,6 +46,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture; 
 import javafx.scene.text.FontWeight;
 import javafx.util.Pair;
+import org.jgrapht.ext.JGraphModelAdapter;
 
 public class GUI extends Application {
 
@@ -55,13 +60,13 @@ public class GUI extends Application {
     private Pane discRoot = new Pane();
     private static int redScore = 0;
     private static int yellowScore = 0;
-    
+    private Button draw;
     private Text text;
     private Text depthText;
     private TextField depthInput;
     private ComboBox algorithmCombo;
     private Button restart;
-    
+    private TreeNode rootTree=new TreeNode();
     private String algorithm;
     private MinMax minMax= new MinMax();
         private MinMaxAlphaBeta minMaxAlphaBeta= new MinMaxAlphaBeta();
@@ -86,7 +91,7 @@ public class GUI extends Application {
         depthText = makeDepthText();
         algorithmCombo = makeComboBox();
         restart = makeButton();
-        
+        draw=makeButton2();
         Shape gridShape = makeGrid();
         
         root.getChildren().add(restart);
@@ -96,8 +101,9 @@ public class GUI extends Application {
         root.getChildren().add(text);
         root.getChildren().add(gridShape);
         root.getChildren().addAll(makeColumns());
+        root.getChildren().add(draw);
         //root.setMaxSize(500, 500);
-        
+        depthInput.setText("2");
         EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
@@ -120,13 +126,23 @@ public class GUI extends Application {
                 root.getChildren().add(text);
                 root.getChildren().add(gridShape);
                 root.getChildren().addAll(makeColumns());
+                root.getChildren().add(draw);
                 
                 System.out.println("Game restart");
             }
         };
+        EventHandler<ActionEvent> eventTree = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e)
+           {
+
+               JGraphAdapterDemo jGraphModelAdapter=new JGraphAdapterDemo();
+               jGraphModelAdapter.draw(rootTree,true);
+                jGraphModelAdapter.showPane();
+            }
+        };
         
         restart.setOnAction(event);
-        
+        draw.setOnAction(eventTree);
         return  root;
     }
     
@@ -138,11 +154,18 @@ public class GUI extends Application {
         Button button = new Button("Restart Game");
         
         button.setLayoutX(680);
-        button.setLayoutY(220);
+        button.setLayoutY(250);
         
         return button;
     }
-    
+    private Button makeButton2(){
+        Button button = new Button("Plot tree");
+
+        button.setLayoutX(680);
+        button.setLayoutY(300);
+
+        return button;
+    }
     
     
     private ComboBox makeComboBox(){
@@ -309,13 +332,14 @@ public class GUI extends Application {
                 this.board.setState(this.getState());
                 System.out.println(this.board.getState().length());
                 Pair<Board,Integer> resultedMove;
-                if(this.algorithm.equals("No Pruning"))
+        System.out.println(this.algorithmCombo.getValue());
+                if(this.algorithmCombo.getValue().equals("No Pruning"))
                 {
-                    resultedMove =minMax.Decide(this.board,Integer.parseInt(depthInput.getText()));
+                    resultedMove =minMax.Decide(this.board,rootTree,Integer.parseInt(depthInput.getText()));
                 }
                 else
                 {
-                    resultedMove =minMaxAlphaBeta.Decide(this.board,Integer.parseInt(depthInput.getText()));
+                    resultedMove =minMaxAlphaBeta.Decide(this.board,rootTree,Integer.parseInt(depthInput.getText()));
                 }
                 column2=resultedMove.getValue();
                 placeDisc(new Disc(redMove),column2);

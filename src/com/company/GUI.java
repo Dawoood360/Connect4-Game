@@ -10,10 +10,7 @@ package com.company;
  * @author abdul
  */
 
-import com.Tree.BasicGraphDemo;
 import com.Tree.JGraphAdapterDemo;
-import com.Tree.Launcher;
-import com.Tree.Treetest;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.geometry.Point2D;
@@ -32,8 +29,6 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javafx.event.ActionEvent;
@@ -46,7 +41,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture; 
 import javafx.scene.text.FontWeight;
 import javafx.util.Pair;
-import org.jgrapht.ext.JGraphModelAdapter;
 
 public class GUI extends Application {
 
@@ -136,7 +130,7 @@ public class GUI extends Application {
            {
 
                JGraphAdapterDemo jGraphModelAdapter=new JGraphAdapterDemo();
-               jGraphModelAdapter.draw(rootTree,true);
+               jGraphModelAdapter.draw(rootTree,null,true,150,10);
                 jGraphModelAdapter.showPane();
             }
         };
@@ -327,12 +321,12 @@ public class GUI extends Application {
     }
     private void aiTurn()
     {
-
+                rootTree=new TreeNode();
                 final int column2;
                 this.board.setState(this.getState());
                 System.out.println(this.board.getState().length());
                 Pair<Board,Integer> resultedMove;
-        System.out.println(this.algorithmCombo.getValue());
+                System.out.println(this.algorithmCombo.getValue());
                 if(this.algorithmCombo.getValue().equals("No Pruning"))
                 {
                     resultedMove =minMax.Decide(this.board,rootTree,Integer.parseInt(depthInput.getText()));

@@ -7,7 +7,9 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.*;
@@ -47,7 +49,7 @@ public class JGraphAdapterDemo<nodeID> extends JApplet {
 
     JGraph jgraph = new JGraph( m_jgAdapter );
     private static Integer nodeID=0;
-    public void draw(TreeNode treeNode,boolean turn) {
+    public void draw(TreeNode treeNode, String nodesId, boolean turn, int xPos, int yPos) {
 
 
 
@@ -68,32 +70,42 @@ public class JGraphAdapterDemo<nodeID> extends JApplet {
 //        positionVertexAt( 23.0, 60, 200 );
 //        positionVertexAt( 24.0, 310, 230 );
 //        positionVertexAt( 28.0, 380, 70 );
-        Double parentHeurstic=treeNode.getHeurstic();
-        String parent=parentHeurstic.toString()+"-"+nodeID.toString();
-        g.addVertex(parent);
+        String parent;
+        if(nodesId == null)
+        {
+            Double parentHeurstic=treeNode.getHeurstic();
+            parent=parentHeurstic.toString()+"-"+nodeID.toString();
+            g.addVertex(parent);
+            this.positionVertexAt(turn,parent,(int)xPos,(int)yPos);
+            turn=!turn;
+        }
+        else {
+             parent = nodesId;
+        }
         DefaultGraphCell cell = m_jgAdapter.getVertexCell( parent );
         nodeID++;
         Map              attr = cell.getAttributes(  );
         Rectangle2D b    = GraphConstants.getBounds( attr );
-        double x=b.getX();
-        double y=b.getY();
-        System.out.println(treeNode.getTreeNodes().size());
+        double x=xPos;
+        double y=yPos+120;
         y=y+60;
+        ArrayList <String> nodeIds= new ArrayList<String>() ;
         for(TreeNode node:treeNode.getTreeNodes()) {
             Double childHeurstic=node.getHeurstic();
             String child=childHeurstic.toString()+"-"+nodeID.toString();
+            nodeIds.add(child);
             g.addVertex( child);
             g.addEdge(parent,child);
-
-
+            x=x+120;
 
             this.positionVertexAt(turn,child,(int)x,(int)y);
-            x=x+120;
             nodeID++;
         }
         turn=!turn;
+        int i =0;
         for(TreeNode node:treeNode.getTreeNodes()) {
-            draw(node,turn);
+            draw(node,nodeIds.get(i),turn,xPos*(i-1),yPos+120);
+        i++;
         }
 
 
@@ -124,7 +136,7 @@ public class JGraphAdapterDemo<nodeID> extends JApplet {
         Map              attr = cell.getAttributes(  );
         Rectangle2D b    = GraphConstants.getBounds( attr );
         Color colorAi= Color.RED;
-        Color colorPerson = Color.YELLOW;
+        Color colorPerson = Color.ORANGE;
         if(turn)
             GraphConstants.setBackground(attr,colorAi);
         else
@@ -137,10 +149,9 @@ public class JGraphAdapterDemo<nodeID> extends JApplet {
     public void showPane()
     {   adjustDisplaySettings( jgraph );
         getContentPane(  ).add( jgraph );
-        resize( DEFAULT_SIZE );
+        resize( 20000,20000 );
         JFrame frame = new JFrame();
         frame.getContentPane().add(new JScrollPane(jgraph));
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
     }

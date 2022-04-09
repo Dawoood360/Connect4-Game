@@ -1,5 +1,6 @@
 package com.Tree;
 
+import com.company.TreeNode;
 import com.fxgraph.cells.RectangleCell;
 import com.fxgraph.cells.TriangleCell;
 import com.fxgraph.edges.CorneredEdge;
@@ -19,7 +20,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.abego.treelayout.Configuration.Location;
 
+
 public class BasicGraphDemo extends Application {
+	private TreeNode treeNode;
+
+	public void setTreeNode(TreeNode treeNode) {
+		this.treeNode = treeNode;
+	}
+
+
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -54,20 +63,26 @@ public class BasicGraphDemo extends Application {
 		final ICell cellE = new RectangleCell("5");
 		final ICell cellF = new RectangleCell("6");
 		final ICell cellG = new RectangleCell("7");
-                final ICell cellH = new TriangleCell("9");
+		final ICell cellH = new TriangleCell("9");
+		final ICell cellY = new TriangleCell("19");
 
 		model.addCell(cellA);
 		model.addCell(cellB);
 		model.addCell(cellC);
+		model.addCell(cellY);
 		model.addCell(cellD);
 		model.addCell(cellE);
 		model.addCell(cellF);
 		model.addCell(cellG);
                 model.addCell(cellH);
 
+
 		final Edge edgeAB = new Edge(cellA, cellB, true);
 		edgeAB.textProperty().set("Directed Edge");
 		model.addEdge(edgeAB);
+		final CorneredEdge edgeAY = new CorneredEdge(cellA, cellY, true,Orientation.HORIZONTAL);
+		edgeAB.textProperty().set("Directed Edge");
+		model.addEdge(edgeAY);
 
 		final CorneredEdge edgeAC = new CorneredEdge(cellA, cellC, true, Orientation.HORIZONTAL);
 		edgeAC.textProperty().set("Directed CorneredEdge");

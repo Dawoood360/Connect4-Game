@@ -132,7 +132,8 @@ public class GUI extends Application {
 
 
                jGraphModelAdapter.draw(rootTree,null,true,500,10);
-                jGraphModelAdapter.showPane();
+               jGraphModelAdapter.showPane();
+               System.out.println(rootTree.toString());
             }
         };
         

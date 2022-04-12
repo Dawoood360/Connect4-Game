@@ -32,6 +32,7 @@ public class MinMax {
             Pair<Board, Double> currentPair= Minimize(currentChild,childTreeNode,Maxdepth);
             utility=currentPair.getValue();
             childTreeNode.setHeurstic((int)utility);
+            childTreeNode.setNodeType("Min");
             parent.getTreeNodes().add(childTreeNode);
 
             if(utility>maxUtility)
@@ -75,6 +76,7 @@ public class MinMax {
             Pair<Board, Double> currentPair= Maximize(currentChild,childTreeNode,Maxdepth);
             utility=currentPair.getValue();
             childTreeNode.setHeurstic((int)utility);
+            childTreeNode.setNodeType("Max");
             parent.getTreeNodes().add(childTreeNode);
 
             if(utility<minUtility)
@@ -94,7 +96,7 @@ public class MinMax {
 
     }
     public Pair<Board,Integer> Decide(Board board,TreeNode parent,int maxDepth){
-
+        parent.setNodeType("Max");
         Pair<Board, Double> decidedPair=Maximize(board,parent,maxDepth);
         String state=decidedPair.getKey().getState();
         String parentState=decidedPair.getKey().getParent().getState();
